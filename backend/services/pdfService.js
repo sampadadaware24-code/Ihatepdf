@@ -1,12 +1,26 @@
-// Service for handling PDF related operations (Placeholder)
-// You can use libraries like 'pdf-parse' or 'pdf-lib' here later.
+const fs = require('fs');
+const pdf = require('pdf-parse');
 
-exports.extractTextFromPDF = async (pdfPath) => {
-  // Logic to extract text from PDF
-  return "Sample extracted text from " + pdfPath;
-};
+/**
+ * Extracts text from a PDF file
+ * @param {string} filePath - Path to the PDF file
+ * @returns {Promise<string>} - Extracted text
+ */
+exports.extractTextFromPDF = async (filePath) => {
+  try {
+    const dataBuffer = fs.readFileSync(filePath);
+    const data = await pdf(dataBuffer);
+    
+    // Clean up text: remove extra whitespace and non-useful characters
+    let text = data.text.replace(/\r\n/g, ' ').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+    
+    if (!text) {
+      throw new Error('No text content found in the PDF');
+    }
 
-exports.generateAudioFromText = async (text, outputPath) => {
-  // Logic to generate audio using a TTS engine
-  return "Audio saved to " + outputPath;
+    return text;
+  } catch (error) {
+    console.error('PDF Extraction Error:', error);
+    throw new Error('Failed to extract text from PDF');
+  }
 };
