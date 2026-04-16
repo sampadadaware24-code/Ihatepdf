@@ -7,7 +7,7 @@ import Loader from './components/Loader';
 import AudioPlayer from './components/AudioPlayer';
 import './App.css';
 
-const API_BASE = 'http://localhost:5000';
+const API_BASE = 'https://ihatepdf-dqii.onrender.com';
 
 export default function App() {
   const [file, setFile] = useState(null);
