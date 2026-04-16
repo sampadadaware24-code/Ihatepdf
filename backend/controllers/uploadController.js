@@ -28,7 +28,7 @@ exports.uploadFile = async (req, res) => {
 
     // 3. Extract Text from PDF
     const text = await pdfService.extractTextFromPDF(localPdfPath);
-    
+
     // 4. Update status to processing
     pdfAudioRecord.status = 'processing';
     await pdfAudioRecord.save();
@@ -36,12 +36,12 @@ exports.uploadFile = async (req, res) => {
     // 5. Convert Text to Speech
     const outputFileName = `audio-${Date.now()}.mp3`;
     const localAudioPath = path.join(__dirname, '../outputs', outputFileName);
-    
+
     await ttsService.generateSpeech(text, localAudioPath);
 
     // 6. Upload Audio to Cloudinary
     const audioUploadResult = await cloudinaryService.uploadFile(localAudioPath, 'ihatepdf/audio', 'video');
-    
+
     // 7. Update Record to Completed
     pdfAudioRecord.audioUrl = audioUploadResult.secure_url;
     pdfAudioRecord.status = 'completed';
@@ -58,7 +58,7 @@ exports.uploadFile = async (req, res) => {
 
   } catch (error) {
     console.error('Conversion Flow Error:', error);
-    
+
     // Handle specific errors and update status if possible
     res.status(500).json({
       error: error.message || 'An error occurred during conversion'
